@@ -68,11 +68,21 @@ class syntax_plugin_dokugitviewer extends DokuWiki_Syntax_Plugin {
 			        else
 			          $bare=true;
 				$log = git_get_log($data['repository'], $limit,$bare);
-				$renderer->doc .= '<ul class="dokugitviewer">';
+				//$renderer->doc .= '<ul class="dokugitviewer">';
+				$renderer->doc .= <<<CCC
+				<table>
+					<tr style="font-weight:bold;text-decoration:underline" align=left> 
+						<td width=100> author</td>
+						<td width=140> date</td>
+						<td> commit</td>
+					</tr>
+CCC;
+				
 				foreach($log as $row)
 				{
-					$renderer->doc .= '<li>';
 					$message = $row['message'];
+					/*
+					$renderer->doc .= '<li>';
 					for($index = 0; $index < strlen($message); $index++)
 					{
 						$char = $message[$index];
@@ -97,15 +107,23 @@ class syntax_plugin_dokugitviewer extends DokuWiki_Syntax_Plugin {
 						else
 							$renderer->doc .= $char;
 					}
+					$renderer->doc .= $message;
 					//$renderer->doc .= '<strong>'.$message.'</strong>';
-					$renderer->doc .= '<br />';
+					//$renderer->doc .= '<br />';
+					$renderer->doc .= ': ';
 					$renderer->doc .= $row['author'].' on ';					
 					$renderer->doc .= date(DATE_FORMAT,$row['timestamp']);
-				
 					$renderer->doc .= '</li>';
+					*/
+					$renderer->doc .= '<tr>';
+					$renderer->doc .= '<td>'.$row['author'].'</td>';
+					$renderer->doc .= '<td>'.date(DATE_FORMAT,$row['timestamp']).'</td>';
+					$renderer->doc .= '<td>'.$message.'</td>';
+					$renderer->doc .= '</tr>';
+					
 					
 				}
-				$renderer->doc .= '</ul>';				
+				$renderer->doc .= '</table>';				
 			}
             return true;
         }
