@@ -2,7 +2,7 @@
 
 require_once('config.inc.php');
 
-function run_git($command, $repo, $bare=false)
+function run_git($command, $repo, $bare=false, $start, $end)
 {
 	$repo = str_replace('/', '', $repo);
 	$repo = str_replace('\\', '', $repo);
@@ -11,7 +11,8 @@ function run_git($command, $repo, $bare=false)
 		
 	$output = array();
 	$ret = 0;
-	$c = GIT_EXEC.' --git-dir='.ROOT_DIR.$repo.' '.$command. ' --first-parent bugtracker/prod..bugtracker/v5.18.2 ';
+	//$c = GIT_EXEC.' --git-dir='.ROOT_DIR.$repo.' '.$command. ' --first-parent bugtracker/prod..bugtracker/v5.18.2 ';
+	$c = GIT_EXEC.' --git-dir='.ROOT_DIR.$repo.' '.$command. ' --first-parent '.$start.'..'.$end;
 	exec($c, $output, $ret);
 	if ($ret != 0) { 
 		//debug
@@ -21,12 +22,12 @@ function run_git($command, $repo, $bare=false)
 	return $output;
 }
 
-function git_get_log($repo, $limit = 10, $bare=false)
+function git_get_log($repo, $limit = 10, $bare=false, $start="prod", $end="admin")
 {
-$limit = 10;
+	$limit = 10;
 	$format = array('%H', '%at', '%an', '%s');
 	$params = implode(DELIMETER, $format);
-	$data = run_git('log --pretty=format:"'.$params.'" -'.$limit, $repo, $bare);	
+	$data = run_git('log --pretty=format:"'.$params.'" -'.$limit, $repo, $bare, $start,  $end);	
 	$result = array();
 	foreach($data as $line)
 	{

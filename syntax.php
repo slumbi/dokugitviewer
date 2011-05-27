@@ -43,6 +43,7 @@ class syntax_plugin_dokugitviewer extends DokuWiki_Syntax_Plugin {
 		$params = preg_replace('/\s{2,}/', '', $params);
 		$params = preg_replace('/\s[=]/', '=', $params);
 		$params = preg_replace('/[=]\s/', '=', $params);
+		//echo $params.'<br>';
 
 		$return = array();
 		foreach(explode(' ', $params) as $param)
@@ -67,7 +68,10 @@ class syntax_plugin_dokugitviewer extends DokuWiki_Syntax_Plugin {
 			          $bare=false;
 			        else
 			          $bare=true;
-				$log = git_get_log($data['repository'], $limit,$bare);
+				$log = git_get_log($data['repository'], $limit,$bare, $data['start'], $data['end']);
+				
+				$renderer->doc .=  "<u><strong> ".$data['start']." -> ".$data['end']."</strong></u>:<br/>";
+
 				//$renderer->doc .= '<ul class="dokugitviewer">';
 				$renderer->doc .= <<<CCC
 				<table>
